@@ -3,9 +3,9 @@ import {
   Activity, AlertOctagon, AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight,
   Bell, BookOpenCheck, Bot, Building2, CalendarClock, Check, CheckCheck, ChevronDown,
   ChevronLeft, ChevronRight, CircleHelp, ClipboardCheck, Clock3, Command, Copy,
-  Download, ExternalLink, Eye, FileCheck2, FileClock, FileSearch, FileText, Filter,
-  Fingerprint, GitCompareArrows, Globe2, Hash, History, Home, Info, Layers3, Link2,
-  ListChecks, LockKeyhole, LogOut, Menu, MessageSquareText, Network, PanelLeftClose,
+  Download, ExternalLink, Eye, EyeOff, FileCheck2, FileClock, FileSearch, FileText, Filter,
+  Fingerprint, GitCompareArrows, Globe2, Hash, History, Home, Info, Key, Layers3, Link2,
+  ListChecks, LockKeyhole, LogOut, Mail, Menu, MessageSquareText, Network, PanelLeftClose,
   Play, Plus, RotateCcw, Search, Send, Settings, Shield, ShieldAlert, ShieldCheck, Sparkles, Upload,
   UserCheck, Users, Workflow, X, Zap
 } from 'lucide-react'
@@ -296,7 +296,51 @@ function Panel({children,className=''}) { return <section className={`panel ${cl
 function SectionHead({title,sub,action}) { return <div className="section-head"><div><h3>{title}</h3>{sub&&<p>{sub}</p>}</div>{action}</div> }
 function EmptyState({icon: I=FileText,title,sub}) { return <div className="empty"><Icon I={I} size={30}/><b>{title}</b><span>{sub}</span></div> }
 
+const demoOfficials = [
+  {
+    id: 'dr-sharma',
+    name: 'Dr. V. K. Sharma',
+    role: 'Chief Regulatory Officer',
+    designation: 'Member Secretary & Chief Approver',
+    email: 'vk.sharma@aicte.gov.in',
+    initials: 'VS',
+    color: 'purple',
+    clearance: 'Level 4 · Chief Authority',
+    department: 'Regulatory Approvals Bureau'
+  },
+  {
+    id: 'officer-mehta',
+    name: 'R. Mehta',
+    role: 'Senior Verification Officer',
+    designation: 'Bureau Head · Scrutiny Division',
+    email: 'r.mehta@aicte.gov.in',
+    initials: 'RM',
+    color: 'teal',
+    clearance: 'Level 3 · Senior Reviewer',
+    department: 'Technical Institutional Verification'
+  },
+  {
+    id: 'analyst-sen',
+    name: 'Ananya Sen',
+    role: 'Compliance Forensic Analyst',
+    designation: 'AICTE Vigilance & Integrity Cell',
+    email: 'a.sen@aicte.gov.in',
+    initials: 'AS',
+    color: 'orange',
+    clearance: 'Level 3 · Forensic Lead',
+    department: 'Forensic Document & Integrity Audit'
+  }
+]
+
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [currentUser, setCurrentUser] = useState(demoOfficials[0])
+  const [loginEmail, setLoginEmail] = useState(demoOfficials[0].email)
+  const [loginPassword, setLoginPassword] = useState('Aurexa@Gov2026')
+  const [loginOtp, setLoginOtp] = useState('849201')
+  const [showPassword, setShowPassword] = useState(false)
+  const [selectedPersonaId, setSelectedPersonaId] = useState('dr-sharma')
+
   const [page,setPage] = useState('Overview')
   const [collapsed,setCollapsed] = useState(false)
   const [search,setSearch] = useState('')
@@ -441,8 +485,191 @@ export default function App() {
     const content=`Subject: Clarification required — ${selectedCase.id}\n\nDear Institution Representative,\n\nDuring preliminary review of your ${selectedCase.type} application, the following item(s) require clarification:\n\n${findings.filter(f=>f.state!=='Resolved').map(f=>`• ${f.title}\n  Observation: ${f.detail}\n  Requested action: ${f.next}`).join('\n\n')}\n\nPlease provide the relevant supporting evidence or a written explanation. These observations are preliminary review flags and are not a final determination.\n\nRegards,\nAuthorised Review Team\n`
     downloadBlob(content,'aurexa-clarification-draft.txt','text/plain');notify('Clarification draft downloaded.')
   }
+
+  const handleLoginSubmit = (e)=>{
+    if(e) e.preventDefault()
+    if(!loginEmail.trim()||!loginPassword.trim()){
+      notify('Please enter your Government Email / Officer ID and Passcode.')
+      return
+    }
+    setIsAuthenticated(true)
+    notify(`Officer ${currentUser.name} authenticated. Welcome to Regulatory Operations.`)
+  }
+
+  const handleLogout = ()=>{
+    setIsAuthenticated(false)
+    notify('Session safely terminated. Officer logged out.')
+  }
+
+  const renderLogin = ()=> <div className="login-page-wrap">
+    <div className="login-glow-1"/>
+    <div className="login-glow-2"/>
+    <div className="login-card-container">
+      <div className="login-side-banner">
+        <div className="login-side-header">
+          <div className="login-brand-mark"><ShieldCheck size={26}/></div>
+          <div className="login-brand-copy">
+            <b>AUREXA<span>·</span>VERIFYAI</b>
+            <small>REGULATORY OPERATIONS PORTAL</small>
+          </div>
+        </div>
+
+        <div className="login-side-content">
+          <div className="login-official-badge"><Shield size={12}/> RESTRICTED GOVERNMENT PORTAL</div>
+          <h2>Institutional Approval & Verification Intelligence</h2>
+          <p>Secure access for AICTE, State Technical Directorates, and authorized higher regulatory authorities. Deterministic multi-document verification, APH compliance audits, and forensic integrity checking.</p>
+          <div className="login-security-features">
+            <div className="login-sec-item">
+              <div className="login-sec-icon"><BookOpenCheck size={16}/></div>
+              <div><b>APH Compliance Grounding</b><span>Enforces official Approval Process Handbook clauses and quotas.</span></div>
+            </div>
+            <div className="login-sec-item">
+              <div className="login-sec-icon"><Fingerprint size={16}/></div>
+              <div><b>Cryptographic Provenance</b><span>SHA-256 fingerprinting & immutable institutional tamper tracking.</span></div>
+            </div>
+            <div className="login-sec-item">
+              <div className="login-sec-icon"><UserCheck size={16}/></div>
+              <div><b>Human-in-the-Loop Safeguards</b><span>Advisory AI signals with mandatory signoff by authorized officials.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="login-side-footer">
+          <span><LockKeyhole size={13}/> 256-Bit TLS · Level 4 Audit</span>
+          <span>AICTE Demo Environment · v2.4</span>
+        </div>
+      </div>
+
+      <div className="login-form-side">
+        <div className="login-form-header">
+          <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:6}}>
+            <Badge tone="purple">Official Access</Badge>
+            <span className="tiny-muted">Gov ID Verification</span>
+          </div>
+          <h3>Higher Official Authentication</h3>
+          <p>Select a pre-verified authority persona or enter authorized credentials.</p>
+        </div>
+
+        <div className="persona-section">
+          <div className="persona-section-title">
+            <span>Select Official Role (Demo Persona)</span>
+            <span style={{color:'#656ff0',cursor:'pointer'}} onClick={()=>notify('Clearance levels control approval, recommendation, and forensic inspection privileges.')}>Clearance Info</span>
+          </div>
+          <div className="persona-grid">
+            {demoOfficials.map(official=>{
+              const isActive = selectedPersonaId === official.id
+              return (
+                <button
+                  key={official.id}
+                  type="button"
+                  className={`persona-btn ${isActive?'active':''}`}
+                  onClick={()=>{
+                    setSelectedPersonaId(official.id)
+                    setCurrentUser(official)
+                    setLoginEmail(official.email)
+                    setLoginPassword('Aurexa@Gov2026')
+                    notify(`Switched to ${official.name} (${official.role})`)
+                  }}
+                >
+                  <div className="persona-top">
+                    <div className={`persona-avatar ${official.color}`}>{official.initials}</div>
+                    <span className="persona-badge">{official.clearance.split('·')[0].trim()}</span>
+                  </div>
+                  <div>
+                    <span className="persona-name">{official.name}</span>
+                    <span className="persona-role">{official.role}</span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="login-divider">
+          <span>OR SIGN IN WITH CREDENTIALS</span>
+        </div>
+
+        <form onSubmit={handleLoginSubmit} className="login-inputs">
+          <div className="login-input-wrap">
+            <label>
+              <span>Government Email / Officer ID</span>
+              <span className="tiny-muted">{currentUser.department}</span>
+            </label>
+            <div className="login-input-box">
+              <Mail size={15}/>
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={e=>setLoginEmail(e.target.value)}
+                placeholder="officer@aicte.gov.in"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="login-input-wrap">
+            <label>
+              <span>Security PIN / Passcode</span>
+              <span className="tiny-muted">Default: Aurexa@Gov2026</span>
+            </label>
+            <div className="login-input-box">
+              <Key size={15}/>
+              <input
+                type={showPassword?'text':'password'}
+                value={loginPassword}
+                onChange={e=>setLoginPassword(e.target.value)}
+                placeholder="Enter security passcode"
+                required
+              />
+              <button
+                type="button"
+                className="pw-toggle-btn"
+                onClick={()=>setShowPassword(!showPassword)}
+                title={showPassword?'Hide password':'Show password'}
+              >
+                {showPassword?<EyeOff size={15}/>:<Eye size={15}/>}
+              </button>
+            </div>
+          </div>
+
+          <div className="otp-bar">
+            <span><b>2FA Token / Secure OTP:</b> Simulated Government OTP</span>
+            <span
+              className="otp-badge"
+              onClick={()=>{setLoginOtp('849201');notify('Demo 2FA OTP applied.')}}
+              title="Click to copy demo token"
+            >
+              {loginOtp}
+            </span>
+          </div>
+
+          <div className="login-actions">
+            <button type="submit" className="login-submit-btn">
+              <ShieldCheck size={17}/> Sign in as {currentUser.name}
+            </button>
+            <button
+              type="button"
+              className="login-token-btn"
+              onClick={()=>{
+                setIsAuthenticated(true)
+                notify(`Authenticated via Digilocker/NIC Officer Token as ${currentUser.name}`)
+              }}
+            >
+              <Fingerprint size={16}/> Instant Biometric / Digital Token Login
+            </button>
+          </div>
+
+          <p className="login-disclaimer">
+            Notice: This portal is strictly for authorized regulatory scrutiny and institutional approval workflows. All access and reviewer actions are logged in the tamper-proof audit trail.
+          </p>
+        </form>
+      </div>
+    </div>
+    {toast&&<div className="toast"><CheckCircleIcon/><span>{toast}</span><button onClick={()=>setToast('')}><X size={15}/></button></div>}
+  </div>
+
   const renderOverview = ()=> <div className="page-stack">
-    <div className="hero-strip"><div className="hero-copy"><div className="eyebrow"><span className="pulse-dot"/> REVIEW INTELLIGENCE / LIVE DEMO</div><h2>Good evening, Reviewer.</h2><p>Here’s your verification workspace at a glance. Prioritise evidence gaps, resolve inconsistencies, and keep every decision traceable.</p><div className="hero-actions"><Button onClick={()=>go('New verification')}><Icon I={Plus} size={16}/> Start verification</Button><Button variant="ghost-light" onClick={()=>go('AI review lab')}><Icon I={Sparkles} size={16}/> Explore AI review lab <ArrowRight size={15}/></Button></div></div><div className="hero-art"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orb-core"><ShieldCheck size={46}/></div><div className="float-chip chip-a"><span className="chip-icon teal"><Check size={13}/></span><span><b>Evidence linked</b><small>Traceable findings</small></span></div><div className="float-chip chip-b"><span className="chip-icon purple"><Sparkles size={13}/></span><span><b>AI-assisted review</b><small>Human in control</small></span></div></div><div className="hero-foot"><span><Icon I={LockKeyhole} size={13}/> Private review workspace</span><span><Icon I={Activity} size={13}/> Demo data · no live AICTE connection</span></div></div>
+    <div className="hero-strip"><div className="hero-copy"><div className="eyebrow"><span className="pulse-dot"/> REGULATORY SCRUTINY / OFFICIAL PORTAL</div><h2>Good evening, {currentUser?.name || 'Higher Official'}.</h2><p>Here’s your verification workspace at a glance. Prioritise evidence gaps, resolve inconsistencies, and keep every decision traceable.</p><div className="hero-actions"><Button onClick={()=>go('New verification')}><Icon I={Plus} size={16}/> Start verification</Button><Button variant="ghost-light" onClick={()=>go('AI review lab')}><Icon I={Sparkles} size={16}/> Explore AI review lab <ArrowRight size={15}/></Button></div></div><div className="hero-art"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orb-core"><ShieldCheck size={46}/></div><div className="float-chip chip-a"><span className="chip-icon teal"><Check size={13}/></span><span><b>Evidence linked</b><small>Traceable findings</small></span></div><div className="float-chip chip-b"><span className="chip-icon purple"><Sparkles size={13}/></span><span><b>AI-assisted review</b><small>Human in control</small></span></div></div><div className="hero-foot"><span><Icon I={LockKeyhole} size={13}/> Clearance: {currentUser?.clearance || 'Class-3 Regulatory Scrutiny'}</span><span><Icon I={Activity} size={13}/> Authenticated via NIC Digital Key</span></div></div>
     <div className="metric-grid">
       <Metric title="Applications in queue" value={String(cases.length).padStart(2,'0')} delta="+12.5%" sub="vs. previous demo period" icon={Building2} tone="blue" />
       <Metric title="Need reviewer attention" value={String(cases.filter(c=>c.status==='Needs review'||c.status==='Ready for review').length).padStart(2,'0')} delta="Priority" sub="Based on demo triage" icon={AlertTriangle} tone="orange" />
@@ -1370,16 +1597,58 @@ export default function App() {
     'APH rule studio':renderRules, 'Analytics & reports':renderAnalytics, 'Audit trail':renderAudit, Settings:renderSettings
   }
   const [mobileNav,setMobileNav] = useState(false)
+
+  if (!isAuthenticated) {
+    return renderLogin()
+  }
+
   return <div className={`app-shell ${collapsed?'nav-collapsed':''} ${mobileNav?'mobile-nav-open':''}`}>
     <aside className="sidebar">
       <div className="brand"><div className="brand-mark"><ShieldCheck size={23}/><span/></div><div className="brand-copy"><b>AUREXA<span>·</span></b><small>VERIFYAI</small></div><button className="collapse-btn" onClick={()=>setCollapsed(!collapsed)} title="Collapse sidebar"><PanelLeftClose size={16}/></button></div>
       <div className="workspace-select"><div className="workspace-avatar">AV</div><div><b>AICTE Review Workspace</b><small>Regulatory operations</small></div><ChevronDown size={14}/></div>
       <nav className="main-nav">{navGroups.map(g=><div className="nav-group" key={g.label}><div className="nav-label">{g.label}</div>{g.items.map(([name,I])=><button key={name} className={`nav-item ${page===name?'active':''}`} onClick={()=>{go(name);setMobileNav(false)}} title={name}><Icon I={I} size={18}/><span>{name}</span>{name==='Investigation'&&<i className="nav-count">{findings.filter(f=>f.state!=='Resolved').length}</i>}</button>)}</div>)}</nav>
-      <div className="sidebar-bottom"><div className="security-card"><div className="security-icon"><ShieldCheck size={17}/></div><div><b>Evidence-first AI</b><small>Human oversight enabled</small></div><span className="status-light"/></div><button className="nav-item" onClick={()=>notify('Help centre is a prototype placeholder.')}><CircleHelp size={18}/><span>Help & guidance</span></button><div className="profile"><div className="profile-avatar">DR</div><div><b>Demo Reviewer</b><small>Verification officer</small></div><button className="icon-btn" onClick={()=>go('Settings')}><Settings size={16}/></button></div></div>
+      <div className="sidebar-bottom">
+        <div className="security-card">
+          <div className="security-icon"><ShieldCheck size={17}/></div>
+          <div><b>Evidence-first AI</b><small>Human oversight enabled</small></div>
+          <span className="status-light"/>
+        </div>
+        <button className="nav-item" onClick={()=>notify('Official Regulatory Scrutiny Protocol: Level 3 Active.')}><CircleHelp size={18}/><span>Help & guidance</span></button>
+        <div className="profile">
+          <div className={`profile-avatar ${currentUser.color}`}>{currentUser.initials}</div>
+          <div style={{flex: 1, minWidth: 0, overflow: 'hidden'}}>
+            <b style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block'}}>{currentUser.name}</b>
+            <small style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block'}}>{currentUser.role}</small>
+          </div>
+          <button className="icon-btn" onClick={handleLogout} title="Sign out session">
+            <LogOut size={16}/>
+          </button>
+        </div>
+      </div>
     </aside>
-    <main className="main-area"><header className="topbar"><div className="topbar-left"><button className="mobile-menu icon-btn" onClick={()=>setMobileNav(!mobileNav)}><Menu size={19}/></button><div className="breadcrumbs"><span>Workspace</span><ChevronRight size={14}/><b>{page}</b></div></div><div className="topbar-right"><div className="environment"><span className="env-dot"/>{demoMode?'DEMO ENVIRONMENT':'PREVIEW MODE'}</div><button className="top-search" onClick={()=>{go('Applications');document.querySelector('.search-box input')?.focus()}}><Search size={16}/><span>Search anything…</span><kbd>⌘ K</kbd></button><button className="icon-btn notification-btn" onClick={()=>notify('You are all caught up in the demo workspace.')}><Bell size={18}/><i/></button><div className="top-avatar">DR</div></div></header>
+    <main className="main-area">
+      <header className="topbar">
+        <div className="topbar-left">
+          <button className="mobile-menu icon-btn" onClick={()=>setMobileNav(!mobileNav)}><Menu size={19}/></button>
+          <div className="breadcrumbs"><span>Workspace</span><ChevronRight size={14}/><b>{page}</b></div>
+        </div>
+        <div className="topbar-right">
+          <div className="official-clearance-pill" title={currentUser.clearance}>
+            <Shield size={12}/>
+            <span>{currentUser.clearance.split('·')[0].trim()}</span>
+          </div>
+          <div className="environment"><span className="env-dot"/>{demoMode?'REGULATORY ENVIRONMENT':'SECURE SCRUTINY'}</div>
+          <button className="top-search" onClick={()=>{go('Applications');document.querySelector('.search-box input')?.focus()}}><Search size={16}/><span>Search anything…</span><kbd>⌘ K</kbd></button>
+          <button className="icon-btn notification-btn" onClick={()=>notify('You are all caught up in the regulatory workspace.')}><Bell size={18}/><i/></button>
+          <div className={`top-avatar ${currentUser.color}`} title={`${currentUser.name} (${currentUser.role})`}>{currentUser.initials}</div>
+          <button className="official-logout-btn" onClick={handleLogout} title="Sign out of official portal">
+            <LogOut size={13}/>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </header>
       <div className="page-content"><div className="page-heading"><div><div className="heading-kicker">AUREXA / {page.toUpperCase()}</div><h1>{pageDescriptions[page][0]}</h1><p>{pageDescriptions[page][1]}</p></div><div className="heading-date"><CalendarClock size={15}/> Wednesday, 28 October 2026</div></div>{content[page]()}</div>
-      <footer className="app-footer"><span>© 2026 Aurexa-VerifyAI <i/> Verification intelligence, with accountability.</span><span><ShieldCheck size={13}/> Prototype · synthetic data · not an official AICTE system</span></footer>
+      <footer className="app-footer"><span>© 2026 Aurexa-VerifyAI <i/> Verification intelligence, with accountability.</span><span><ShieldCheck size={13}/> Prototype · Class-3 Regulatory Scrutiny Portal</span></footer>
     </main>
     {mobileNav&&<div className="mobile-scrim" onClick={()=>setMobileNav(false)}/>}
     {toast&&<div className="toast"><CheckCircleIcon/><span>{toast}</span><button onClick={()=>setToast('')}><X size={15}/></button></div>}
